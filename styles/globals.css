@@ -1,0 +1,135 @@
+/* LATAMesa — shared editorial system */
+
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Helvetica, Arial, sans-serif;
+  --ink:#151515;
+  --paper:#E8E0D3;
+  --offwhite:#F4F1EA;
+  --predominant:#2647E8;
+  --accent:#C9FF32;
+  --on-predominant:#F4F1EA;
+  --rule: rgba(21,21,21,0.16);
+  --rule-on-predominant: rgba(244,241,234,0.35);
+  --maxw: 1680px;
+  --gut: clamp(20px, 3vw, 40px);
+  --margin: clamp(20px, 6vw, 96px);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--offwhite);color:var(--ink);font-family:var(--font-sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;font-feature-settings:"case" 1}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+button{font-family:inherit;background:none;border:0;color:inherit;cursor:pointer;padding:0}
+input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+ul{margin:0;padding:0;list-style:none}
+h1,h2,h3,h4,p,figure{margin:0}
+
+/* every .dc.html mounted via <dc-import> must be block-level, or width/aspect-ratio
+   on the tag itself is ignored (custom elements default to display:inline) — that
+   collapse was the source of text overlapping the page below each image slot. */
+dc-import{display:block}
+
+.lt-eyebrow{font-family:var(--font-sans);font-weight:600;font-size:11px;letter-spacing:0.14em;text-transform:uppercase}
+
+/* Swiss-poster tiny caption strip — four columns of small tracked mono-ish
+   text, the way a type-specimen poster signs itself top and bottom. */
+.lt-tiny-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;font-size:10.5px;line-height:1.4;letter-spacing:0.02em;color:rgba(21,21,21,0.55)}
+.lt-tiny-strip span:last-child{text-align:right}
+@media (max-width:900px){.lt-tiny-strip{grid-template-columns:1fr 1fr}.lt-tiny-strip span:nth-child(3),.lt-tiny-strip span:nth-child(4){display:none}}
+.lt-tiny-strip.on-dark{color:rgba(244,241,234,0.65)}
+
+/* Numbered roman-index list — the poster's "I. / II. / III." block list */
+.lt-index-list{display:grid;grid-template-columns:1fr 1fr;gap:32px 48px}
+@media (max-width:640px){.lt-index-list{grid-template-columns:1fr}}
+.lt-index-item{display:flex;gap:14px;align-items:baseline;padding:14px 0;border-top:1px solid rgba(244,241,234,0.22)}
+.lt-index-item .num{font-size:13px;font-weight:600;opacity:.65;min-width:24px}
+.lt-index-item .lbl{font-size:19px;font-weight:700;letter-spacing:-0.01em;line-height:1.25}
+.lt-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.lt-wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--margin);padding-right:var(--margin)}
+
+.lt-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gut)}
+@media (max-width:980px){.lt-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media (max-width:640px){.lt-grid{grid-template-columns:repeat(1,minmax(0,1fr))}}
+
+.lt-focus:focus-visible{outline:2px solid var(--predominant);outline-offset:3px}
+
+/* ---------- Nav: always a hamburger, opens a frosted glass overlay ---------- */
+.lt-nav{position:sticky;top:0;z-index:100;background:transparent}
+.lt-nav-row{display:flex;align-items:center;justify-content:space-between;padding:22px var(--margin);gap:24px;position:relative;z-index:2}
+.lt-nav-row.on-image::before{content:'';position:absolute;left:0;right:0;top:0;height:160px;background:linear-gradient(to bottom, rgba(0,0,0,.5), transparent);z-index:-1;pointer-events:none}
+.lt-nav-row.on-image .lt-logo,.lt-nav-row.on-image .lt-menu-btn{color:#fff}
+.lt-nav-row.on-image .lt-issue-pill{color:#fff;border-color:rgba(255,255,255,.7)}
+.lt-logo{font-family:var(--font-sans);font-weight:700;font-size:20px;letter-spacing:-0.01em;white-space:nowrap}
+.lt-logo small{display:block;font-weight:500;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(21,21,21,0.55);margin-top:2px}
+.lt-nav-right{display:flex;align-items:center;gap:18px}
+.lt-issue-pill{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:7px 12px;border:1px solid currentColor}
+.lt-issue-pill i{width:7px;height:7px;background:var(--predominant);display:inline-block}
+@media (max-width:640px){.lt-issue-pill{display:none}}
+
+.lt-menu-btn{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;position:relative;z-index:120}
+.lt-menu-btn .lt-burger{width:24px;height:16px;position:relative}
+.lt-menu-btn .lt-burger span{position:absolute;left:0;right:0;height:2px;background:currentColor;transition:transform .3s ease, opacity .3s ease}
+.lt-menu-btn .lt-burger span:nth-child(1){top:0}
+.lt-menu-btn .lt-burger span:nth-child(2){top:7px}
+.lt-menu-btn .lt-burger span:nth-child(3){top:14px}
+.lt-menu-toggle{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+
+/* the frosted-glass overlay: fixed full-screen, blurs whatever sits behind it.
+   Kept nearly clear (low white opacity) so it reads as glass, not a gray film;
+   overflow-y:auto + clamp() keep every link on screen instead of clipping. */
+.lt-overlay{position:fixed;inset:0;z-index:110;background:rgba(255,255,255,0.16);backdrop-filter:blur(34px) saturate(160%);-webkit-backdrop-filter:blur(34px) saturate(160%);opacity:0;visibility:hidden;transition:opacity .4s ease;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;padding:96px var(--margin) 32px}
+.lt-menu-toggle:checked ~ .lt-overlay{opacity:1;visibility:visible}
+.lt-menu-toggle:checked ~ .lt-nav-row .lt-burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.lt-menu-toggle:checked ~ .lt-nav-row .lt-burger span:nth-child(2){opacity:0}
+.lt-menu-toggle:checked ~ .lt-nav-row .lt-burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.lt-overlay-links{display:flex;flex-direction:column;gap:2px;margin:auto 0}
+.lt-overlay-links a{font-size:clamp(26px,5.4vw,48px);font-weight:800;letter-spacing:-0.02em;padding:8px 0;border-top:1px solid rgba(21,21,21,0.15);color:var(--ink)}
+.lt-overlay-links a:first-child{border-top:none}
+.lt-overlay-links a:hover,.lt-overlay-links a[aria-current="page"]{color:var(--predominant)}
+.lt-overlay-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;margin-top:32px;padding-top:18px;border-top:1px solid rgba(21,21,21,0.15);font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(21,21,21,0.6);flex-shrink:0}
+@media (max-height:640px){.lt-overlay-links a{font-size:clamp(20px,5vw,32px);padding:6px 0}.lt-overlay{padding-top:80px}}
+@media (prefers-reduced-motion:reduce){.lt-overlay,.lt-menu-btn .lt-burger span{transition:none}}
+
+/* ---------- Buttons / links ---------- */
+.lt-link-arrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;padding-bottom:3px;border-bottom:1px solid currentColor}
+.lt-link-arrow svg{transition:transform .35s ease}
+.lt-link-arrow:hover svg{transform:translateX(4px)}
+@media (prefers-reduced-motion:reduce){.lt-link-arrow svg{transition:none}}
+
+/* ---------- Footer ---------- */
+.lt-footer{background:var(--ink);color:var(--offwhite);padding:88px var(--margin) 32px}
+.lt-footer .lt-grid{padding-bottom:56px;border-bottom:1px solid rgba(244,241,234,0.18)}
+.lt-footer h4{font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(244,241,234,0.55);margin-bottom:18px}
+.lt-footer a{font-size:14px}
+.lt-footer .lt-flist li{margin-bottom:10px}
+.lt-footer .lt-flist a:hover{text-decoration:underline;text-underline-offset:3px}
+.lt-foot-bottom{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:center;padding-top:24px;font-size:12px;color:rgba(244,241,234,0.55)}
+
+/* ---------- Full-bleed photo bands (no boxed "recuadros" — the image IS the
+   section, edge to edge, tinted with the issue color and carrying its own
+   overlaid type) ---------- */
+.lt-bleed{display:block;position:relative;width:100%;height:100%;overflow:hidden;background:#000}
+.lt-bleed img{width:100%;height:100%;object-fit:cover;display:block}
+.lt-bleed .tint{position:absolute;inset:0;mix-blend-mode:multiply;opacity:.55}
+.lt-bleed .scrim-b{position:absolute;left:0;right:0;bottom:0;height:65%;background:linear-gradient(to top, rgba(0,0,0,.62), transparent);pointer-events:none}
+.lt-bleed .scrim-t{position:absolute;left:0;right:0;top:0;height:40%;background:linear-gradient(to bottom, rgba(0,0,0,.4), transparent);pointer-events:none}
+.lt-bleed .content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--margin);color:#fff;z-index:2}
+.lt-bleed .corner{position:absolute;top:var(--margin);right:var(--margin);z-index:2;color:#fff;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
+
+/* ---------- Reveal ---------- */
+.lt-reveal{animation:lt-fade .6s ease both}
+@keyframes lt-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.lt-reveal{animation:none}}
+
+.lt-hairline{height:1px;background:var(--rule);border:0}
+.lt-folio{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(21,21,21,0.5)}
+
+.lt-quote{font-family:var(--font-sans);font-weight:700;line-height:1.15;letter-spacing:-0.015em}
+
+.lt-scrolldown{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase}
+.lt-scrolldown .line{width:1px;height:34px;background:currentColor;position:relative;overflow:hidden}
+.lt-scrolldown .line i{position:absolute;left:0;top:-100%;width:100%;height:100%;background:var(--accent);animation:lt-drip 2.2s ease-in-out infinite}
+@keyframes lt-drip{0%{top:-100%}60%{top:100%}100%{top:100%}}
+@media (prefers-reduced-motion:reduce){.lt-scrolldown .line i{animation:none;top:0}}

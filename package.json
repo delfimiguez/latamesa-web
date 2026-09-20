@@ -1,0 +1,20 @@
+{
+  "name": "latamesa-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "next-sanity": "^9.4.0",
+    "@sanity/image-url": "^1.0.2",
+    "@sanity/vision": "^3.55.0",
+    "sanity": "^3.55.0",
+    "styled-components": "^6.1.11"
+  }
+}
